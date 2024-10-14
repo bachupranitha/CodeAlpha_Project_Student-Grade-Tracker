@@ -1,0 +1,53 @@
+import random
+import nltk
+import numpy as np
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.linear_model import LogisticRegression
+
+nltk.download('punkt')
+
+training_data = [
+    {"intent": "greeting", "patterns": ["Hi", "Hello", "How are you?", "Good day", "Hey"], "responses": ["Hello!", "Hi there!", "Greetings!", "Hi! How can I assist you?"]},
+    {"intent": "goodbye", "patterns": ["Bye", "See you later", "Goodbye", "I am leaving", "Have a nice day"], "responses": ["Goodbye!", "Take care!", "See you later!", "Have a nice day!"]},
+    {"intent": "thanks", "patterns": ["Thanks", "Thank you", "That's helpful", "I appreciate it"], "responses": ["You're welcome!", "Happy to help!", "No problem!", "Glad I could assist!"]},
+    {"intent": "name", "patterns": ["What is your name?", "Who are you?", "Tell me your name", "What do you call yourself?"], "responses": ["I'm an intelligent chatbot!", "I'm your virtual assistant.", "Call me ChatBot!"]},
+    {"intent": "unknown", "patterns": [], "responses": ["Sorry, I didn't understand that.", "Could you please rephrase?", "I'm not sure how to respond to that."]}
+]
+
+all_patterns = []
+all_intents = []
+
+for data in training_data:
+    for pattern in data["patterns"]:
+        all_patterns.append(pattern)
+        all_intents.append(data["intent"])
+
+vectorizer = CountVectorizer(tokenizer=nltk.word_tokenize)
+X = vectorizer.fit_transform(all_patterns)
+
+model = LogisticRegression()
+model.fit(X, all_intents)
+
+def get_intent(user_input):
+    input_data = vectorizer.transform([user_input])
+    intent = model.predict(input_data)[0]
+    return intent
+
+def get_response(intent):
+    for data in training_data:
+        if data["intent"] == intent:
+            return random.choice(data["responses"])
+    return random.choice(training_data[-1]["responses"])
+
+def chatbot():
+    print("ChatBot: Hello! How can I help you today?")
+    while True:
+        user_input = input("You: ")
+        if user_input.lower() in ["exit", "quit", "bye"]:
+            print("ChatBot: Goodbye!")
+            break
+        intent = get_intent(user_input)
+        response = get_response(intent)
+        print(f"ChatBot: {response}")
+
+chatbot()
