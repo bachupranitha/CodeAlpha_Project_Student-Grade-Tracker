@@ -1,0 +1,56 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class StudentGrades {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        ArrayList<Double> grades = new ArrayList<>();
+        
+        System.out.println("Enter the number of students: ");
+        int numStudents = scanner.nextInt();
+        
+        for (int i = 0; i < numStudents; i++) {
+            System.out.println("Enter the grade for student " + (i + 1) + ": ");
+            double grade = scanner.nextDouble();
+            grades.add(grade);
+        }
+        
+        double average = calculateAverage(grades);
+        double highest = findHighestGrade(grades);
+        double lowest = findLowestGrade(grades);
+        
+        System.out.println("\nGrades Summary:");
+        System.out.println("Average Grade: " + average);
+        System.out.println("Highest Grade: " + highest);
+        System.out.println("Lowest Grade: " + lowest);
+    }
+    
+    public static double calculateAverage(ArrayList<Double> grades) {
+        double sum = 0;
+        for (double grade : grades) {
+            sum += grade;
+        }
+        return sum / grades.size();
+    }
+    
+    public static double findHighestGrade(ArrayList<Double> grades) {
+        double highest = grades.get(0);
+        for (double grade : grades) {
+            if (grade > highest) {
+                highest = grade;
+            }
+        }
+        return highest;
+    }
+
+    public static double findLowestGrade(ArrayList<Double> grades) {
+        double lowest = grades.get(0);
+        for (double grade : grades) {
+            if (grade < lowest) {
+                lowest = grade;
+            }
+        }
+        return lowest;
+    }
+}
